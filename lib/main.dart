@@ -45,20 +45,21 @@ class CalculatorScreen extends StatefulWidget {
 }
 
 class _CalculatorScreenState extends State<CalculatorScreen> {
-
   @override
   Widget build(BuildContext context) {
-    final calc = Provider.of<CalculatorProvider>(context);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Output display
-          Container(
-            height: 200,
-            padding: const EdgeInsets.all(24),
-            alignment: Alignment.bottomRight,
-            child: Text(calc.display, style: Theme.of(context).textTheme.displayLarge),
+          Selector<CalculatorProvider, String>(
+            selector: (context, calc) => calc.display,
+            builder: (context, display, child) => Container(
+              height: 200,
+              padding: const EdgeInsets.all(24),
+              alignment: Alignment.bottomRight,
+              child: Text(display, style: Theme.of(context).textTheme.displayLarge),
+            ),
           ),
           // Buttons keypad
           Expanded(
@@ -116,6 +117,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       ),
     );
   }
+  // Build a button with the given text
   Widget _buildButton(BuildContext context, String text) {
     final screenWidth = MediaQuery.of(context).size.width;
     final buttonSize = screenWidth * 0.22; // Adjust to ~18% of screen width
@@ -125,7 +127,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       height: buttonSize,
       child: TextButton(
         onPressed: () => {
-          Provider.of<CalculatorProvider>(context, listen: false).onBtnPress(text)
+          context.read<CalculatorProvider>().onBtnPress(text)
         },
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
@@ -136,6 +138,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       ),
     );
   }
+  // Placeholder for the empty space between the buttons
   Widget _buildPlaceholder(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final buttonSize = screenWidth * 0.22; // Adjust 

@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 
 class CalculatorProvider extends ChangeNotifier {
-  String _display = '0';
+  var display = "0";
   double? _firstOperand;
   String? _operator;
-  bool _shouldReset = false;
-  String get display => _display;
+  var _shouldReset = false;
 
   void onBtnPress(String value) {
     if (value == "+" || value == "-" || value == "×" || value == "÷") {
-      _firstOperand = double.parse(_display);
+      _firstOperand = double.tryParse(display) ?? 0.0;
       _operator = value;
       _shouldReset = true;
     } else if (value == "=") {
       _calculate();
     } else {
-      if (_display == "0" || _shouldReset) {
-        _display = value;
+      if (display == "0" || _shouldReset) {
+        display = value;
         _shouldReset = false;
       } else {
-        _display += value;
+        display += value;
       }
     }
     notifyListeners();
@@ -27,8 +26,8 @@ class CalculatorProvider extends ChangeNotifier {
 
   void _calculate() {
     if (_operator != null && _firstOperand != null) {
-      double secondOperand = double.parse(_display);
-      double result = 0;
+      final secondOperand = double.tryParse(display) ?? 0.0;
+      var result = 0.0;
       switch (_operator) {
         case "+":
           result = _firstOperand! + secondOperand;
@@ -45,7 +44,7 @@ class CalculatorProvider extends ChangeNotifier {
       }
       _firstOperand = null;
       _operator = null;
-      _display = result % 1 == 0 ? result.toInt().toString() : result.toString();
+      display = result % 1 == 0 ? result.toInt().toString() : result.toString();
     }
   }
 }
